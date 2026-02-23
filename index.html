@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EUB Batch 23 CGPA Calculator</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; margin: 0; padding: 10px; }
+        .container { background: white; padding: 15px 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { text-align: center; color: #2c3e50; margin: 0; font-size: 1.2rem; }
+        p.subtitle { text-align: center; color: #7f8c8d; margin: 2px 0 15px 0; font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        td { padding: 4px 0; border-bottom: 1px solid #f1f1f1; }
+        th { text-align: left; padding-bottom: 5px; font-size: 13px; color: #34495e; border-bottom: 2px solid #eee; }
+        input[type="number"] { width: 65px; padding: 5px; border: 1px solid #ddd; border-radius: 4px; outline: none; text-align: center; font-size: 14px; }
+        
+        /* Buttons Group */
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        button { flex: 1; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: bold; transition: 0.2s; }
+        
+        .btn-reset { background-color: #e74c3c; color: white; }
+        .btn-reset:hover { background-color: #c0392b; }
+        
+        .btn-calc { background-color: #27ae60; color: white; }
+        .btn-calc:hover { background-color: #219150; }
+
+        #result-box { margin-top: 15px; padding: 10px; border-radius: 6px; text-align: center; display: none; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .result-val { font-size: 20px; font-weight: bold; display: block; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>CGPA Calculator</h2>
+    <p class="subtitle">EUB | Batch 23</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Semester</th>
+                <th style="text-align: center;">Cr.</th>
+                <th style="text-align: right;">SGPA</th>
+            </tr>
+        </thead>
+        <tbody id="input-table">
+            </tbody>
+    </table>
+
+    <div class="btn-group">
+        <button class="btn-reset" onclick="resetFields()">Reset</button>
+        <button class="btn-calc" onclick="calculateCGPA()">Calculate</button>
+    </div>
+
+    <div id="result-box" class="success">
+        <span style="font-size: 13px;">Your CGPA:</span>
+        <span class="result-val" id="cgpa-display">0.00</span>
+    </div>
+</div>
+
+<script>
+    const semesterData = [
+        { name: "1st", cr: 13.50 }, { name: "2nd", cr: 15.00 },
+        { name: "3rd", cr: 15.00 }, { name: "4th", cr: 15.00 },
+        { name: "5th", cr: 13.50 }, { name: "6th", cr: 16.50 },
+        { name: "7th", cr: 16.50 }, { name: "8th", cr: 16.50 },
+        { name: "9th", cr: 12.50 }, { name: "10th", cr: 6.00 }
+    ];
+
+    const tableBody = document.getElementById('input-table');
+
+    semesterData.forEach((sem) => {
+        let row = `<tr>
+            <td>${sem.name} Sem</td>
+            <td style="text-align: center; color: #888;">${sem.cr.toFixed(1)}</td>
+            <td style="text-align: right;"><input type="number" step="0.01" min="0" max="4" class="sgpa-input" data-cr="${sem.cr}" placeholder="0.00"></td>
+        </tr>`;
+        tableBody.innerHTML += row;
+    });
+
+    function calculateCGPA() {
+        let totalPoints = 0, totalCredits = 0, filled = 0;
+        document.querySelectorAll('.sgpa-input').forEach(input => {
+            let sgpa = parseFloat(input.value);
+            let cr = parseFloat(input.getAttribute('data-cr'));
+            if (!isNaN(sgpa) && sgpa > 0) {
+                totalPoints += (sgpa * cr);
+                totalCredits += cr;
+                filled++;
+            }
+        });
+
+        if (filled === 0) return alert("Enter SGPA first!");
+
+        let cgpa = totalPoints / totalCredits;
+        document.getElementById('result-box').style.display = "block";
+        document.getElementById('cgpa-display').innerText = cgpa.toFixed(2);
+    }
+
+    function resetFields() {
+        document.querySelectorAll('.sgpa-input').forEach(input => input.value = "");
+        document.getElementById('result-box').style.display = "none";
+    }
+</script>
+
+</body>
+</html>
